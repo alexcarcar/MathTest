@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Math Test</string>
+    <string name="mode_multiply">Mode: X</string>
+    <string name="mode_add">Mode: +</string>
+</resources>
