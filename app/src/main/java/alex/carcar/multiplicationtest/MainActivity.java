@@ -14,12 +14,14 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     public static final int OPERAND_MAX = 20;
-    TextView question;
+    TextView question, stats;
+    String answerText, mode;
     EditText answer;
-    String answerText;
     Random random;
     Button modeButton;
-    String mode;
+    int totalCorrect;
+    long individualTime;
+    long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +31,13 @@ public class MainActivity extends AppCompatActivity {
         question = findViewById(R.id.question);
         answer = findViewById(R.id.answer);
         modeButton = findViewById(R.id.mode);
+        stats = findViewById(R.id.statistics);
 
         random = new Random();
         mode = "x";
+        totalCorrect = 0;
+        startTime = System.currentTimeMillis();
+        individualTime = startTime;
         createQuestion();
 
         answer.addTextChangedListener(new TextWatcher() {
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().equals(answerText)) {
+                    totalCorrect++;
                     createQuestion();
                 }
             }
@@ -69,6 +76,22 @@ public class MainActivity extends AppCompatActivity {
             answerText = Integer.toString(a + b);
             answer.setText("");
         }
+        if (totalCorrect > 0) {
+            stats.setText(createReport());
+        }
+    }
+
+    private String createReport() {
+        StringBuffer report = new StringBuffer();
+        report.append("Correct: ");
+        report.append(totalCorrect);
+        report.append("\n");
+
+        long individualDuration = System.currentTimeMillis() - individualTime;
+        String s1 = String.format("%.2f s\n", individualDuration / 1000.0);
+        report.append(s1);
+        individualTime = System.currentTimeMillis();
+        return report.toString();
     }
 
     public void modeClick(View view) {
