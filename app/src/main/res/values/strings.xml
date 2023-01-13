@@ -2,4 +2,9 @@
     <string name="app_name">Math Test</string>
     <string name="mode_multiply">Multiply</string>
     <string name="mode_add">Add</string>
+    <string name="easy">Easy</string>
+    <string name="normal">Normal</string>
+    <string name="hard">Hard</string>
+    <string name="multiply">x</string>
+    <string name="add">+</string>
 </resources>

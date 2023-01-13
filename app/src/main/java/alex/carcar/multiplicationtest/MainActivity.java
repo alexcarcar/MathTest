@@ -13,15 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int OPERAND_MAX = 20;
     TextView question, stats;
     String answerText, mode;
     EditText answer;
     Random random;
-    Button modeButton;
+    Button modeButton, difficultySquare;
     int totalCorrect;
     long individualTime;
     long startTime;
+    Level difficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
         answer = findViewById(R.id.answer);
         modeButton = findViewById(R.id.mode);
         stats = findViewById(R.id.statistics);
+        difficultySquare = findViewById(R.id.difficultySquare);
 
         random = new Random();
         mode = "x";
         totalCorrect = 0;
         startTime = System.currentTimeMillis();
         individualTime = startTime;
+        difficulty = Level.REGULAR;
+        setDifficultyColor();
         createQuestion();
 
         answer.addTextChangedListener(new TextWatcher() {
@@ -61,28 +64,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createQuestion() {
+        StringBuilder questionString = new StringBuilder();
+        String operand;
+        String modeString;
+        int a, b;
         if (mode.equals("x")) {
-            modeButton.setText(getResources().getString(R.string.mode_multiply));
-            int a = random.nextInt(OPERAND_MAX) + 1;
-            int b = random.nextInt(OPERAND_MAX) + 1;
-            question.setText(a + " x " + b);
+            operand = getResources().getString(R.string.multiply);
+            modeString = getResources().getString(R.string.mode_multiply);
+            a = random.nextInt(difficulty.multiplyRange) + difficulty.multiplyStart;
+            b = random.nextInt(difficulty.multiplyRange) + difficulty.multiplyStart;
             answerText = Integer.toString(a * b);
             answer.setText("");
         } else {
-            modeButton.setText(getResources().getString(R.string.mode_add));
-            int a = random.nextInt(900) + 100;
-            int b = random.nextInt(900) + 100;
-            question.setText(a + " + " + b);
+            operand = getResources().getString(R.string.add);
+            modeString = getResources().getString(R.string.mode_add);
+            a = random.nextInt(difficulty.addRange) + difficulty.addStart;
+            b = random.nextInt(difficulty.addRange) + difficulty.addStart;
             answerText = Integer.toString(a + b);
             answer.setText("");
         }
+        modeButton.setText(modeString);
+        questionString.append(a);
+        questionString.append(" ");
+        questionString.append(operand);
+        questionString.append(" ");
+        questionString.append(b);
+        question.setText(questionString.toString());
         if (totalCorrect > 0) {
             stats.setText(createReport());
         }
     }
 
     private String createReport() {
-        StringBuffer report = new StringBuffer();
+        StringBuilder report = new StringBuilder();
         report.append("Correct: ");
         report.append(totalCorrect);
         report.append("\n");
@@ -97,5 +111,53 @@ public class MainActivity extends AppCompatActivity {
     public void modeClick(View view) {
         mode = mode.equals("x") ? "+" : "x";
         createQuestion();
+    }
+
+    public void difficultyClick(View view) {
+        if (difficulty == Level.REGULAR) {
+            difficulty = Level.EASY;
+        } else if (difficulty == Level.EASY) {
+            difficulty = Level.HARD;
+        } else {
+            difficulty = Level.REGULAR;
+        }
+        setDifficultyColor();
+        createQuestion();
+    }
+
+    private void setDifficultyColor() {
+        int color;
+        String label;
+        switch (difficulty) {
+            case EASY:
+                color = R.color.easyLevel;
+                label = getResources().getString(R.string.easy);
+                break;
+            case HARD:
+                color = R.color.hardLevel;
+                label = getResources().getString(R.string.hard);
+                break;
+            case REGULAR:
+            default:
+                color = R.color.regularLevel;
+                label = getResources().getString(R.string.normal);
+                break;
+        }
+        difficultySquare.setBackgroundColor(getResources().getColor(color));
+        difficultySquare.setText(label);
+        modeButton.setBackgroundColor(getResources().getColor(color));
+    }
+
+    enum Level {
+        EASY(0, 13, 10, 90), REGULAR(0, 20, 100, 900), HARD(0, 100, 1000, 9000);
+
+        final int multiplyStart, multiplyRange, addStart, addRange;
+
+        Level(int _multiplyStart, int _multiplyRange, int _addStart, int _addRange) {
+            multiplyStart = _multiplyStart;
+            multiplyRange = _multiplyRange;
+            addStart = _addStart;
+            addRange = _addRange;
+        }
     }
 }
