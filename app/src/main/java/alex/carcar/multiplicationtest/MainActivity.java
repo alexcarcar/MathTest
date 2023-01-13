@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     enum Level {
-        EASY(0, 13, 10, 90), REGULAR(0, 20, 100, 900), HARD(0, 100, 1000, 9000);
+        EASY(1, 13, 10, 90), REGULAR(1, 20, 100, 900), HARD(1, 100, 1000, 9000);
 
         final int multiplyStart, multiplyRange, addStart, addRange;
 
