@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <include
+        layout="@layout/flash_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
@@ -19,7 +24,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:onClick="difficultyClick" />
+            android:onClick="difficultyClick"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/mode"
@@ -28,7 +34,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:onClick="modeClick" />
+            android:onClick="modeClick"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/statistics"
@@ -36,7 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginStart="10dp"
-            android:textColor="#ff0" />
+            android:textColor="#ff0"
+            android:visibility="gone" />
     </LinearLayout>
 
 
@@ -45,7 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="25pt" />
+        android:textSize="25pt"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/answer"
@@ -55,6 +64,7 @@
         android:width="150dp"
         android:ems="10"
         android:inputType="number"
-        android:textSize="25pt" />
+        android:textSize="25pt"
+        android:visibility="gone" />
 
 </LinearLayout>

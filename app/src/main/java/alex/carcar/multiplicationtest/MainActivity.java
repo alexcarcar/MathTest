@@ -1,16 +1,22 @@
 package alex.carcar.multiplicationtest;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Random;
+
+import alex.common.AlexView;
+import alex.common.voice.AlexVoice;
 
 public class MainActivity extends AppCompatActivity {
     TextView question, stats;
@@ -22,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     long individualTime;
     long startTime;
     Level difficulty;
+    LinearLayout flashLayout;
+    View[] flashScreen, mainScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         modeButton = findViewById(R.id.mode);
         stats = findViewById(R.id.statistics);
         difficultySquare = findViewById(R.id.difficultySquare);
+        mainScreen = new View[]{question, answer, modeButton, stats, difficultySquare};
 
         random = new Random();
         mode = "x";
@@ -61,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        // FLASH SCREEN
+        flashLayout = findViewById(R.id.flashLayout);
+        flashScreen = new View[]{flashLayout};
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(this::showFlashScreen, 1000);
+    }
+
+    private void showFlashScreen() {
+        String toSpeak = getResources().getString(R.string.flash_screen_tag);
+        AlexVoice.say(toSpeak);
+        flashLayout.setVisibility(View.VISIBLE);
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(this::hideFlashScreen, 3500);
+    }
+
+    private void hideFlashScreen() {
+        AlexView.hideAndShow(flashScreen, mainScreen);
     }
 
     private void createQuestion() {
@@ -146,6 +173,18 @@ public class MainActivity extends AppCompatActivity {
         difficultySquare.setBackgroundColor(getResources().getColor(color));
         difficultySquare.setText(label);
         modeButton.setBackgroundColor(getResources().getColor(color));
+    }
+
+    @Override
+    protected void onPause() {
+        AlexVoice.stop();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        AlexVoice.start(getApplicationContext());
+        super.onResume();
     }
 
     enum Level {
