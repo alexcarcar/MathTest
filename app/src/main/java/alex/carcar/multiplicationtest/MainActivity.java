@@ -17,6 +17,7 @@ import java.util.Random;
 
 import alex.common.AlexView;
 import alex.common.voice.AlexVoice;
+import alex.common.voice.PositivePhrases;
 
 public class MainActivity extends AppCompatActivity {
     TextView question, stats;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         individualTime = startTime;
         difficulty = Level.REGULAR;
         setDifficultyColor();
-        createQuestion();
 
         answer.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideFlashScreen() {
         AlexView.hideAndShow(flashScreen, mainScreen);
+        createQuestion();
     }
 
     private void createQuestion() {
@@ -95,12 +96,14 @@ public class MainActivity extends AppCompatActivity {
         String operand;
         String modeString;
         int a, b;
+        String toSpeak;
         if (mode.equals("x")) {
             operand = getResources().getString(R.string.multiply);
             modeString = getResources().getString(R.string.mode_multiply);
             a = random.nextInt(difficulty.multiplyRange) + difficulty.multiplyStart;
             b = random.nextInt(difficulty.multiplyRange) + difficulty.multiplyStart;
             answerText = Integer.toString(a * b);
+            toSpeak = a + " times " + b;
             answer.setText("");
         } else {
             operand = getResources().getString(R.string.add);
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             a = random.nextInt(difficulty.addRange) + difficulty.addStart;
             b = random.nextInt(difficulty.addRange) + difficulty.addStart;
             answerText = Integer.toString(a + b);
+            toSpeak = a + " plus " + b;
             answer.setText("");
         }
         modeButton.setText(modeString);
@@ -119,7 +123,9 @@ public class MainActivity extends AppCompatActivity {
         question.setText(questionString.toString());
         if (totalCorrect > 0) {
             stats.setText(createReport());
+            toSpeak = PositivePhrases.getRandom(random) + ". " + toSpeak;
         }
+        AlexVoice.say(toSpeak);
     }
 
     private String createReport() {
